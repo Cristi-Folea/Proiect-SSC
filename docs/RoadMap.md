@@ -1,4 +1,4 @@
-# Proiectul P3
+### Proiectul P3
 
 # Roadmap P3: Detectie YOLOv8n accelerata cu TensorRT
 
@@ -129,24 +129,6 @@ sources/cpp/include/yolo_postprocess.cuh
 sources/cpp/src/yolo_postprocess.cu
 sources/tests/test_cuda_pipeline.cpp
 ```
-
-### Livrabil la sfarsitul saptamanii
-
-Un pipeline functional:
-
-```text
-imagine -> preprocesare CUDA -> TensorRT -> postprocesare CUDA -> detectii
-```
-
-Exemplu de detectie:
-
-```text
-class_name: person
-confidence: 0.91
-box: x1, y1, x2, y2
-```
-
----
 
 ## Saptamana 4: Aplicatie video, tracking si tripwire
 
