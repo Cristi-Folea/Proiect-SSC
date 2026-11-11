@@ -1,1 +1,38 @@
 /docs/notes.md
+ Python virtual environments
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Build directories
+/build/
+/cmake-build-*/
+/CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
+Makefile
+
+# Compiled files
+*.o
+*.a
+*.so
+*.exe
+
+# TensorRT engines
+*.engine
+*.plan
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Existing documentation exclusion
+#/docs/notes.md
+EOF
