@@ -55,4 +55,3 @@ std::vector<float> preprocess(const cv::Mat &img, int targetW,  int targetH, Let
 
     return rez;
 }
-
