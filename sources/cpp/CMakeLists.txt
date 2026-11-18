@@ -5,6 +5,8 @@ project(tensorrt_inference LANGUAGES CXX CUDA)
 find_package(CUDAToolkit REQUIRED)
 find_package(OpenCV REQUIRED)
 
+#yolo seg
+
 message(STATUS "OpenCV include directories: ${OpenCV_INCLUDE_DIRS}")
 
 set(CMAKE_CXX_STANDARD 20)
