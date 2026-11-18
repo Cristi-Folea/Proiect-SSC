@@ -27,14 +27,13 @@ Alegerea modelului, configurarea mediului si obtinerea unei versiuni YOLOv8n car
 
 ### Activitati
 
-- Configurarea Jetson Orin Nano cu JetPack, CUDA, cuDNN, TensorRT, PyTorch,
+- Configurarea Jetson Orin Nano cu CUDA, cuDNN, TensorRT, PyTorch,
   ONNX si OpenCV.
 - Descarcarea modelului preantrenat YOLOv8n.
 - Stabilirea intrarii modelului, de exemplu `640 x 640`, batch size `1`.
 - Rularea inferentei PyTorch pe imagini si pe cel putin un videoclip scurt.
 - Salvarea clasei, scorului de incredere si coordonatelor fiecarui bounding box.
 - Exportarea modelului in ONNX.
-- Validarea fisierului ONNX si compararea rezultatelor PyTorch cu ONNX.
 
 ### Livrabile in `/sources`
 
@@ -43,15 +42,6 @@ sources/python/yolo_baseline.py
 sources/python/export_yolov8_onnx.py
 sources/python/validate_onnx.py
 sources/tests/test_onnx.py
-sources/configs/yolov8n.yaml
-```
-
-### Artefacte generate
-
-```text
-artifacts/models/yolov8n.onnx
-results/yolov8n_baseline.json
-results/onnx_validation.json
 ```
 
 ## Saptamana 2: Engine-uri TensorRT FP32 si FP16
@@ -78,16 +68,18 @@ Conversia aceluiasi model ONNX in doua engine-uri TensorRT si implementarea inca
 
 ```text
 sources/cpp/CMakeLists.txt
-sources/cpp/include/trt_runner.hpp
-sources/cpp/src/trt_runner.cpp
 sources/scripts/build_engines.sh
 ```
 
 ### Surse generate
 
 ```text
-artifacts/engines/yolov8n_fp32.engine
-artifacts/engines/yolov8n_fp16.engine
+sources/engines/yolov8n_fp32.engine
+sources/engines/yolov8n_fp16.engine
+sources/cpp/include/TensorEngine.h
+sources/cpp/include/TensorEngine.cpp
+
+mmp_ssc_22
 ```
 
 ## Saptamana 3: Preprocesare si postprocesare CUDA
@@ -116,18 +108,20 @@ Implementarea etapelor de preprocesare si postprocesare pe GPU, astfel incat pip
 #### Testare
 
 - Compararea rezultatului CUDA cu o implementare CPU de referinta.
-- Verificarea aceleiasi clase pentru aceleasi imagini.
-- Verificarea dimensiunilor si coordonatelor bounding box-urilor.
-- Raportarea explicita a erorilor de sincronizare sau alocare CUDA.
 
 ### Livrabile in `/sources`
 
 ```text
-sources/cpp/include/cuda_preprocess.cuh
-sources/cpp/src/cuda_preprocess.cu
-sources/cpp/include/yolo_postprocess.cuh
-sources/cpp/src/yolo_postprocess.cu
-sources/tests/test_cuda_pipeline.cpp
+sources/cpp/include/Postprocess.cuh
+sources/cpp/src/Postprocess.cu
+sources/cpp/include/Preprocess.cuh
+sources/cpp/src/Preprocess.cu
+sources/cpp/include//Preprocess.h
+sources/cpp/src/Preprocess.cpp
+sources/cpp/include/Postprocess.h
+sources/cpp/include/Postprocess.cpp
+
+sources/tests/TestProcess.cpp
 ```
 
 ## Saptamana 4: Aplicatie video, tracking si tripwire
