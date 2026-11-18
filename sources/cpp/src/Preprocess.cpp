@@ -8,27 +8,15 @@
 std::vector<float> preprocess(const cv::Mat &img, int targetW,  int targetH, LetterBox &info) {
 
     // info actualizat
-    info.originH = img.rows;
-    info.originW = img.cols;
-
-    auto originalH = info.originH;
-    auto originalW = info.originW;
-
-    info.scale = std::min(static_cast<float>(targetH)/originalH, static_cast<float>(targetW)/originalW);
-
-    const int newW = (int)(originalW * info.scale);
-    const int newH = (int)(originalH * info.scale);
-
-    info.padX = (targetW - newW) / 2;
-    info.padY = (targetH - newH) / 2;
+    initLetterBox(info,img,targetW,targetH);
 
     cv::Mat resizedImage;
-    cv::resize(img, resizedImage, cv::Size(newW, newH), 0, 0 ,cv::INTER_AREA);
+    cv::resize(img, resizedImage, cv::Size(info.newW, info.newH), 0, 0 ,cv::INTER_AREA);
 
     // 3 canale si de culoare gri
     cv::Mat canvas(cv::Size(targetW,targetH), CV_8UC3, cv::Scalar(114, 114,114));
 
-    cv::Rect roi(info.padX, info.padY, newW, newH); // rect of interest, colt stanga sus
+    cv::Rect roi(info.padX, info.padY, info.newW, info.newH); // rect of interest, colt stanga sus
     resizedImage.copyTo(canvas(roi));
 
     std::vector<float> rez(3 * targetH * targetW);

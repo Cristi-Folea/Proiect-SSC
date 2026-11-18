@@ -18,5 +18,4 @@ struct Detection {
 
 std::vector<Detection> postprocess(const std::vector<float> &ouput, const LetterBox & info);
 
-
 #endif //TENSORRT_INFERENCE_POSTPROCESS_H
