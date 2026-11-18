@@ -31,6 +31,21 @@ add_executable(tensorrt_inference main.cpp
 
 target_link_libraries(tensorrt_inference PRIVATE nvinfer CUDA::cudart ${OpenCV_LIBS} )
 
+add_executable(benchmark benchmark.cpp include/TensorEngine.h
+        src/TensorEngine.cpp
+        src/Preprocess.cpp
+        include/Preprocess.h
+        include/Preprocess.h
+        src/Postprocess.cpp
+        include/Postprocess.h
+        src/Preprocess.cu
+        src/Preprocess.cu
+        src/Preprocess.cu
+        include/Preprocess.cuh
+        src/Postprocess.cu
+        include/Postprocess.cuh
+        include/Postprocess.cuh)
+target_link_libraries(benchmark PRIVATE nvinfer CUDA::cudart ${OpenCV_LIBS} )
 
 
 ########## TEST
