@@ -30,7 +30,8 @@ public:
 
 private:
 
-    RawDetection* d_detections = nullptr;
+    RawDetection *d_detections = nullptr;
+    RawDetection *d_detectionsNMS = nullptr;
     int* d_count = nullptr;
     int maxDetections = 0;
 

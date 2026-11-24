@@ -29,14 +29,23 @@ enum STRUCTURA_OUTPUT {
     PROBS
 };
 
+float IoU(Detection a, Detection b) {
+    const cv::Rect intersection = a.box & b.box;
+    // int intersectionWidth = std::min(a.box.x, b.box.x) - std::max(a.box.x, b.box.x);
+    // int intersectionHeigth = std::min(a.box.y, b.box.y) - std::max(a.box.y, b.box.y);
+    float unionArea = a.box.area() + b.box.area() - intersection.area();
+    return unionArea > 0.0f ? intersection.area() / unionArea : 0.0f;
+}
+
 
 std::vector<Detection> postprocess(const std::vector<float> &output, const LetterBox &info) {
 
     const int numClasses = 80;
     const int numCells = 8400;
-    const float confTreshold = 0.25f;
+    const float confTreshold = 0.6f;
 
-    std::vector<Detection> detections;
+
+    std::vector<Detection> detectionsPerClass[80];
 
     for ( int cell = 0 ; cell < numCells; cell++) {
 
@@ -73,10 +82,46 @@ std::vector<Detection> postprocess(const std::vector<float> &output, const Lette
             y2 = std::min(info.originH, y2);
 
             Detection detection = {cv::Rect(cv::Point(x1, y1), cv::Point(x2,y2)), maxScore, maxC};
-            detections.push_back(detection);
+            detectionsPerClass[maxC].push_back(detection);
         }
 
     }
 
-    return detections;
+    std::vector<Detection> rez;
+    for (auto& detections : detectionsPerClass) {
+        std::sort(detections.begin(),detections.end(),[](Detection &a, Detection &b) {
+        return a.score > b.score;
+    });
+        float nmsTreshold = 0.45f;
+
+        std::vector<bool> surpressed(detections.size(), false);
+
+        for ( int i = 0; i < detections.size(); i++) {
+            if ( surpressed[i] == false) {
+                rez.push_back(detections[i]);
+
+                for (int j = i + 1; j < detections.size(); j++) {
+                    if (IoU(detections[i], detections[j]) >= nmsTreshold) {
+                        surpressed[i] = true;
+                    }
+                }
+            }
+        }
+    }
+
+    return rez;
 }
+
+
+/*
+
+    Ceata, obiecte transparente, coliziune intre obiecte -> la cerinta
+    de 3p.
+
+    3 astfel de efecte e nevoie pentru 3p. sau obiecte care sa mearga pe traiectorii
+    curbe Bezier.
+
+    P(t, P0, P1) = (1-t)P0 + tP1
+    BP0P1P2 = B(P0P1(t)) *(1-t) + B(P1P2(t))
+//*/
+

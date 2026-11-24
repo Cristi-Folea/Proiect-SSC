@@ -12,6 +12,19 @@ enum STRUCTURA_OUTPUT {
     PROBS
 };
 
+__device__ float IoU(RawDetection a, RawDetection b) {
+    const float width = max(0,min(a.x2, b.x2) - max(a.x1, b.x1));
+    const float height = max(0,min(a.y2, b.y2) - max(a.y1, b.y1));
+    const float intersectionArea = width * height;
+
+    const float areaA = (a.x2 - a.x1) * (a.y2 - a.y1);
+    const float areaB = (b.x2 - b.x1) * (b.y2 - b.y1);
+
+    const float unionArea = areaA + areaB - intersectionArea;
+    return unionArea > 0.0f ? intersectionArea / unionArea : 0.0f;
+
+}
+
 __global__ void Kernel( const float *d_ouput, RawDetection * d_detections, int *d_count, float confTreshold, LetterBox info, int nrCells, int nrClasses, int maxDetections) {
 
     int cell = blockIdx.x * blockDim.x + threadIdx.x;
@@ -57,6 +70,8 @@ __global__ void Kernel( const float *d_ouput, RawDetection * d_detections, int *
         }
         d_detections[index] = {x1, y1, x2, y2, maxScore, maxC};
 
+
+
     }
 }
 
@@ -68,10 +83,17 @@ void Postprocess::init(int requestedMaxDetection) {
     cudaFree(d_detections);
     cudaFree(d_count);
 
+    cudaFree(d_detectionsNMS);
+
     cudaMalloc(&d_detections, requestedMaxDetection * sizeof(RawDetection));
+    cudaMalloc(&d_detectionsNMS, requestedMaxDetection * sizeof(RawDetection));
     cudaMalloc(&d_count, sizeof(int));
 
-    if (d_detections == nullptr || d_count == nullptr) {
+    if (d_detections == nullptr || d_count == nullptr || d_detectionsNMS == nullptr) {
+        if (d_detectionsNMS) {
+            cudaFree(d_detectionsNMS);
+            d_detectionsNMS = nullptr;
+        }
         if (d_detections) {
             cudaFree(d_detections);
             d_detections = nullptr;
@@ -89,6 +111,11 @@ void Postprocess::init(int requestedMaxDetection) {
 
 
 void Postprocess::release() {
+
+    if (d_detectionsNMS) {
+        cudaFree(d_detectionsNMS);
+        d_detectionsNMS = nullptr;
+    }
 
     if (d_detections) {
         cudaFree(d_detections);
