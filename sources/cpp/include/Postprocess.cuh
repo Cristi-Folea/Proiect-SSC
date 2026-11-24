@@ -32,6 +32,7 @@ private:
 
     RawDetection *d_detections = nullptr;
     RawDetection *d_detectionsNMS = nullptr;
+    bool *d_overlap = nullptr;
     int* d_count = nullptr;
     int maxDetections = 0;
 
