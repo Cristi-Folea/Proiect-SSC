@@ -92,7 +92,7 @@ std::vector<Detection> postprocess(const std::vector<float> &output, const Lette
         std::sort(detections.begin(),detections.end(),[](Detection &a, Detection &b) {
         return a.score > b.score;
     });
-        float nmsTreshold = 0.45f;
+        float nmsTreshold = 0.2f;
 
         std::vector<bool> surpressed(detections.size(), false);
 
@@ -102,7 +102,7 @@ std::vector<Detection> postprocess(const std::vector<float> &output, const Lette
 
                 for (int j = i + 1; j < detections.size(); j++) {
                     if (IoU(detections[i], detections[j]) >= nmsTreshold) {
-                        surpressed[i] = true;
+                        surpressed[j] = true;
                     }
                 }
             }
