@@ -40,8 +40,6 @@ Alegerea modelului, configurarea mediului si obtinerea unei versiuni YOLOv8n car
 ```text
 sources/python/yolo_baseline.py
 sources/python/export_yolov8_onnx.py
-sources/python/validate_onnx.py
-sources/tests/test_onnx.py
 ```
 
 ## Saptamana 2: Engine-uri TensorRT FP32 si FP16
